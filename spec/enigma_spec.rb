@@ -34,4 +34,12 @@ RSpec.describe Enigma do
     expect(@enigma.final_shifts).to eq(expected_3)
   end
 
+  it 'assigns index to each character' do
+    message = "hello world"
+
+    expected = {0 => "h", 1 => "e", 2 => "l", 3 => "l", 4 => "o", 5 => " ", 6 => "w", 7 => "o", 8 => "r", 9 => "l", 10 => "d"}
+
+    expect(@enigma.message_with_index(message)).to eq(expected)
+  end
+
 end

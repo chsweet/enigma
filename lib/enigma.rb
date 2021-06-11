@@ -8,7 +8,7 @@ class Enigma
 
   def decrypt(message, key, date = today_date)
   end
-  
+
   def random_key
     rand(5 ** 5).to_s.rjust(5, '0')
   end
@@ -39,10 +39,19 @@ class Enigma
                  }
   end
 
-  def final_shifts(key, date)
-    key_shift_assignment(key).merge(offsets_shift_assignment(date)) do |key, oldval, newval|
+  #need to take in arguments (key, date)
+  def final_shifts
+    key_shift_assignment.merge(offsets_shift_assignment) do |key, oldval, newval|
      oldval + newval
     end
+  end
+
+  def message_with_index(message)
+    message_hash = {}
+    message.each_char.with_index do |char, index|
+     message_hash[index] = char
+    end
+    message_hash
   end
 
 end
