@@ -6,7 +6,7 @@ class Enigma
 
   end
 
-  def decrypt(message, key, date = today_date)
+  def decrypt(encrypted_message, key, date = today_date)
   end
 
   def random_key
@@ -49,9 +49,25 @@ class Enigma
   def message_with_index(message)
     message_hash = {}
     message.each_char.with_index do |char, index|
-     message_hash[index] = char
+     message_hash[index] = char.downcase
     end
     message_hash
   end
+
+  def message_with_shift
+
+  end
+
+  def character_set_with_index
+    char_set = ("a".."z").to_a << " "
+    char_hash = {}
+    char_set.each.with_index do |char, index|
+      char_hash[index] = char
+    end
+    require "pry"; binding.pry
+    char_hash
+  end
+
+  def
 
 end
