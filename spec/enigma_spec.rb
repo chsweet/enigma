@@ -53,7 +53,7 @@ RSpec.describe Enigma do
     expect(@enigma.message_with_shift).to eq(expected_2)
   end
 
-  it 'assigns each character to index' do
+  xit 'assigns each character to index' do
     expect(@enigma.character_set_with_index.length).to eq(27)
   end
 
