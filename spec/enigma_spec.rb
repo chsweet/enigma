@@ -1,6 +1,8 @@
 require 'spec_helper'
 require 'date'
 require './lib/keys'
+require './lib/date'
+require './lib/shifts'
 require './lib/enigma'
 
 RSpec.describe Enigma do

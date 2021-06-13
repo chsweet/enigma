@@ -1,56 +1,60 @@
-require 'date'
-
 class Enigma
+  attr_reader :key, :date
 
-  def encrypt(message, key = random_key, date = today_date)
+  def initialize
+    @key = key
+    @date = date
+    @char_set = ("a".."z").to_a << " "
+  end
+
+  def encrypt(message, key = KeyGenerator.random_key, date = Date.todays_date)
 
   end
 
-  def decrypt(encrypted_message, key, date = today_date)
+  def decrypt(encrypted_message, key, date = Date.todays_date)
+
   end
-
-  # def message_with_index(message)
-  #   message_hash = {}
-  #   message.each_char.with_index do |char, index|
-  #    message_hash[index] = char.downcase
-  #   end
-  #   message_hash
-  # end
-  #
-  # def message_with_shift
-  #
-  # end
-
-  # def character_set_with_index
-  #   char_set = ("a".."z").to_a << " "
-  #   char_hash = {}
-  #   char_set.each.with_index do |char, index|
-  #     char_hash[index] = char
-  #   end
-  #   require "pry"; binding.pry
-  #   char_hash
-  # end
 
   def message_char_index(message)
-    @a_array = []
-    @b_array = []
-    @c_array = []
-    @d_array = []
+    @a = [] @b = [] @c = [] @d = []
     message.each_char.with_index do |char, index|
-     @a_array << char if index == 0
-     @b_array << char if index == 1
-     @c_array << char if index == 2
-     @d_array << char if index == 3
+     @a << char if index % 4 == 1
+     @b << char if index % 4 == 2
+     @c << char if index % 4 == 3
+     @d << char if index % 4 == 0
     end
   end
 
   def character_rotate(message, shift_num)
-    char_set = ("a".."z").to_a << " "
-    key = Hash[char_set.zip(char_set.rotate(number))]
+    key = Hash[@har_set.zip(char_set.rotate(number))]
     message.each_char.reduce("") do |new_char, char|
       new_char + key[char]
     end
   end
+
+end
+
+# def message_with_index(message)
+#   message_hash = {}
+#   message.each_char.with_index do |char, index|
+#    message_hash[index] = char.downcase
+#   end
+#   message_hash
+# end
+#
+# def message_with_shift
+#
+# end
+
+# def character_set_with_index
+#   char_set = ("a".."z").to_a << " "
+#   char_hash = {}
+#   char_set.each.with_index do |char, index|
+#     char_hash[index] = char
+#   end
+#   require "pry"; binding.pry
+#   char_hash
+# end
 
 # A = [0, 4, 8, 12, 16]
 # [0, 4, 8, 12, 16]
@@ -68,6 +72,3 @@ class Enigma
 # ["l", "w", "d", nil, nil]
 # new_array.values_at(*D)
 # ["l", "o", nil, nil, nil]
-
-
-end
