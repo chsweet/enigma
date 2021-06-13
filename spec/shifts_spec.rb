@@ -1,12 +1,10 @@
 require 'spec_helper'
-require './lib/keys'
+require './lib/key_generator'
 require './lib/shifts'
 
 RSpec.describe Shifts do
   before :each do
-    @shifts = Shifts.new
-    allow(@shifts).to receive(:key).and_return("02715")
-    allow(@shifts).to receive(:date).and_return("040895")
+    @shifts = Shifts.new("02715", "040895")
   end
 
   it 'exists' do
