@@ -1,54 +1,96 @@
 require 'date'
 
 class Enigma
-  attr_reader :alphabet
+  attr_reader :alphabet, :message, :key, :date, :shift
 
   def initialize
     @alphabet = ("a".."z").to_a << " "
   end
 
-  def encrypt(message, key = KeyGenerator.random_key, date = Date::today)
-    hash = Hash.new
+  def encrypt(message, key=nil, date=nil)
+    @message = message.downcase
+    @key = key || KeyGenerator.random_key
+    @date = date || todays_date
+    @shift = Shifts.new(@key, @date)
+    message_with_alphabet_index(@message)
+    encrypted = {
+                  encryption: encrypted_string(@message, @shift),
+                  key: @key,
+                  date: @date
+                }
   end
 
-  def decrypt(encrypted_message, key, date = Date::today)
-    hash = Hash.new
+  def decrypt(message, key, date=nil)
+    @message = message.downcase
+    @key = key || KeyGenerator.random_key
+    @date = date || todays_date
+    @shift = Shifts.new(@key, @date)
+    message_with_alphabet_index(@message)
+    require "pry"; binding.pry
+    decrypted = {
+                  decryption: decrypted_string(@message, @shift),
+                  key: @key,
+                  date: @date
+                }
+  end
+
+  def todays_date
+    Date.today.strftime("%d%m%y")
   end
 
   def message_with_alphabet_index(message)
-    message_with_alphabet_index = []
+    message_alphabet_index = []
     message.each_char do |char|
-      message_with_alphabet_index << @alphabet.index(char)
+      message_alphabet_index << @alphabet.index(char)
     end
-    message_with_alphabet_index
+    message_alphabet_index
   end
 
-  def alphabet_a
-    @alphabet.rotate(3)
+  def alphabet_a(shift)
+    require "pry"; binding.pry
+    number = shift.final_shifts["A"]
+    @alphabet.rotate(number)
   end
 
-  def alphabet_b
-    @alphabet.rotate(27)
+  def alphabet_b(shift)
+    number = shift.final_shifts["B"]
+    @alphabet.rotate(number)
   end
 
-  def alphabet_c
-    @alphabet.rotate(73)
+  def alphabet_c(shift)
+    number = shift.final_shifts["C"]
+    @alphabet.rotate(number)
   end
 
-  def alphabet_d
-    @alphabet.rotate(20)
+  def alphabet_d(shift)
+    number = shift.final_shifts["D"]
+    @alphabet.rotate(number)
   end
 
-  def encryped_string
-    message_with_alphabet_index.map.with_index do |number, index|
+  def encrypted_string(message, shift)
+    message_with_alphabet_index(message).map.with_index do |number, index|
       if (index + 1) % 4 == 1
-        alphabet_a[number]
+        alphabet_a(shift)[number]
       elsif (index +1) % 4 == 2
-        alphabet_b[number]
+        alphabet_b(shift)[number]
       elsif (index + 1) % 4 == 3
-        alphabet_c[number]
+        alphabet_c(shift)[number]
       elsif (index + 1) % 4 == 0
-        alphabet_d[number]
+        alphabet_d(shift)[number]
+      end
+    end.join
+  end
+
+  def decrypted_string(message, shift)
+    message_with_alphabet_index(message).map.with_index do |number, index|
+      if (index + 1) % 4 == 1
+        alphabet_a(shift).reverse[number]
+      elsif (index +1) % 4 == 2
+        alphabet_b(shift).reverse[number]
+      elsif (index + 1) % 4 == 3
+        alphabet_c(shift).reverse[number]
+      elsif (index + 1) % 4 == 0
+        alphabet_d(shift).reverse[number]
       end
     end.join
   end
