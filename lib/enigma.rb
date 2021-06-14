@@ -46,37 +46,56 @@ class Enigma
     message_alphabet_index
   end
 
-  def alphabet_a(shift)
-    require "pry"; binding.pry
+  def encrypted_alphabet_a(shift)
     number = shift.final_shifts["A"]
     @alphabet.rotate(number)
   end
 
-  def alphabet_b(shift)
+  def encrypted_alphabet_b(shift)
     number = shift.final_shifts["B"]
     @alphabet.rotate(number)
   end
 
-  def alphabet_c(shift)
+  def encrypted_alphabet_c(shift)
     number = shift.final_shifts["C"]
     @alphabet.rotate(number)
   end
 
-  def alphabet_d(shift)
+  def encrypted_alphabet_d(shift)
     number = shift.final_shifts["D"]
     @alphabet.rotate(number)
+  end
+
+  def decrypted_alphabet_a(shift)
+    number = shift.final_shifts["A"]
+    @alphabet.rotate(-number)
+  end
+
+  def decrypted_alphabet_b(shift)
+    number = shift.final_shifts["B"]
+    @alphabet.rotate(-number)
+  end
+
+  def decrypted_alphabet_c(shift)
+    number = shift.final_shifts["C"]
+    @alphabet.rotate(-number)
+  end
+
+  def decrypted_alphabet_d(shift)
+    number = shift.final_shifts["D"]
+    @alphabet.rotate(-number)
   end
 
   def encrypted_string(message, shift)
     message_with_alphabet_index(message).map.with_index do |number, index|
       if (index + 1) % 4 == 1
-        alphabet_a(shift)[number]
+        encrypted_alphabet(shift)[number]
       elsif (index +1) % 4 == 2
-        alphabet_b(shift)[number]
+        encrypted_alphabet(shift)[number]
       elsif (index + 1) % 4 == 3
-        alphabet_c(shift)[number]
+        encrypted_alphabet(shift)[number]
       elsif (index + 1) % 4 == 0
-        alphabet_d(shift)[number]
+        encrypted_alphabet(shift)[number]
       end
     end.join
   end
@@ -84,13 +103,13 @@ class Enigma
   def decrypted_string(message, shift)
     message_with_alphabet_index(message).map.with_index do |number, index|
       if (index + 1) % 4 == 1
-        alphabet_a(shift).reverse[number]
+        decrypted_alphabet_a(shift)[number]
       elsif (index +1) % 4 == 2
-        alphabet_b(shift).reverse[number]
+        decrypted_alphabet_b(shift)[number]
       elsif (index + 1) % 4 == 3
-        alphabet_c(shift).reverse[number]
+        decrypted_alphabet_c(shift)[number]
       elsif (index + 1) % 4 == 0
-        alphabet_d(shift).reverse[number]
+        decrypted_alphabet_d(shift)[number]
       end
     end.join
   end
