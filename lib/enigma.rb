@@ -19,7 +19,7 @@ class Enigma
     @shift = Shifts.new(@key, @date)
     message_with_alphabet_index(@message)
     encrypted = {
-                  encryption: encrypted_string(@message, @shift),
+                  encryption: final_encrypted_message(@message, @shift),
                   key: @key,
                   date: @date
                 }
@@ -32,7 +32,7 @@ class Enigma
     @shift = Shifts.new(@key, @date)
     message_with_alphabet_index(@message)
     decrypted = {
-                  decryption: decrypted_string(@message, @shift),
+                  decryption: final_decrypted_message(@message, @shift),
                   key: @key,
                   date: @date
                 }
@@ -48,7 +48,17 @@ class Enigma
     message_alphabet_index
   end
 
-  def encrypted_string(message, shift)
+  def original_message_special_characters(message)
+    special_char = {}
+    message.each_char.with_index do |char, index|
+      if @alphabet.index(char).nil?
+        special_char[index] = char
+      end
+    end
+    special_char
+  end
+
+  def encrypted_message_array(message, shift)
     message_with_alphabet_index(message).map.with_index do |number, index|
       if (index + 1) % 4 == 1
         encrypted_alphabet_a(shift)[number]
@@ -59,10 +69,18 @@ class Enigma
       elsif (index + 1) % 4 == 0
         encrypted_alphabet_d(shift)[number]
       end
-    end.join
+    end
   end
 
-  def decrypted_string(message, shift)
+  def final_encrypted_message(message, shift)
+    encrypted_message = encrypted_message_array(message, shift)
+    original_message_special_characters(message).each do |index, spec_char|
+      encrypted_message.insert(index, spec_char)
+    end
+    encrypted_message.join
+  end
+
+  def decrypted_message_array(message, shift)
     message_with_alphabet_index(message).map.with_index do |number, index|
       if (index + 1) % 4 == 1
         decrypted_alphabet_a(shift)[number]
@@ -73,7 +91,15 @@ class Enigma
       elsif (index + 1) % 4 == 0
         decrypted_alphabet_d(shift)[number]
       end
-    end.join
+    end
+  end
+
+  def final_decrypted_message(message, shift)
+    decrypted_message = decrypted_message_array(message, shift)
+    original_message_special_characters(message).each do |index, spec_char|
+      decrypted_message.insert(index, spec_char)
+    end
+    decrypted_message.join
   end
 
   def encrypted_alphabet_a(shift)
