@@ -1,6 +1,7 @@
 require 'spec_helper'
 require 'date'
-require './lib/keys'
+require './lib/key_generator'
+require './lib/shifts'
 require './lib/enigma'
 
 RSpec.describe Enigma do
@@ -12,54 +13,95 @@ RSpec.describe Enigma do
     expect(@enigma).to be_a(Enigma)
   end
 
-  xit 'creates todays date DDMMYY' do
-    expect(@enigma.todays_date).to eq("110621")
+  it 'can encrypt a message with key and date given' do
+    expected = {
+                encryption: "keder ohulw",
+                key: "02715",
+                date: "040895"
+                }
+    expect(@enigma.encrypt("HELLO world", "02715", "040895")).to eq(expected)
   end
 
-  it '.offsets_shift_assignment' do
-    expected = {"A" => 1, "B" => 0, "C" => 2, "D" => 5}
-
-    expect(@enigma.offsets_shift_assignment("040895")).to eq(expected)
+  it 'can decrypt a message with key and date given' do
+    expected = {
+                decryption: "hello world",
+                key: "02715",
+                date: "040895"
+                }
+    expect(@enigma.decrypt("keder ohulw", "02715", "040895")).to eq(expected)
   end
 
-  it 'combines key and offset shift assignments' do
-    expected_1 = {"A" => 02, "B" => 27, "C" => 71, "D" => 15}
-    expected_2 = {"A" => 1, "B" => 0, "C" => 2, "D" => 5}
-
-    allow(@enigma).to receive(:key_shift_assignment).and_return(expected_1)
-    allow(@enigma).to receive(:offsets_shift_assignment).and_return(expected_2)
-
-    expected_3 = {"A" => 3, "B" => 27, "C" => 73, "D" => 20}
-
-    expect(@enigma.final_shifts).to eq(expected_3)
+  it 'returns todays date' do
+    expect(@enigma.todays_date.length).to eq(6)
+    expect(@enigma.todays_date.class).to eq(String)
   end
 
-  xit 'assigns index to each character' do
+  it 'can assign new character' do
     message = "hello world"
 
-    expected = {0 => "h", 1 => "e", 2 => "l", 3 => "l", 4 => "o", 5 => " ", 6 => "w", 7 => "o", 8 => "r", 9 => "l", 10 => "d"}
+    expected = [7, 4, 11, 11, 14, 26, 22, 14, 17, 11, 3]
 
-    expect(@enigma.message_with_index(message)).to eq(expected)
+    expect(@enigma.message_with_alphabet_index(message)).to eq(expected)
   end
 
-  xit 'it assigns each index to a shift letter' do
-    expected_1 = {0 => "h", 1 => "e", 2 => "l", 3 => "l", 4 => "o", 5 => " ", 6 => "w", 7 => "o", 8 => "r", 9 => "l", 10 => "d"}
-    expected_2 = {"A" => 3, "B" => 27, "C" => 73, "D" => 20}
+  it 'creates alphabet for shift A' do
+    @shift = Shifts.new(@key, @date)
+    expected_1 = {"A" => 3, "B" => 27, "C" => 73, "D" => 20}
+    allow(@shift).to receive(:final_shifts).and_return(expected_1)
 
-    allow(@enigma).to receive(:message_with_index).and_return(expected_1)
-    allow(@enigma).to receive(:final_shifts).and_return(expected_2)
+    expected_2 = ["d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", " ", "a", "b", "c"]
 
-
-    expect(@enigma.message_with_shift).to eq(expected_2)
+    expect(@enigma.encrypted_alphabet_a(@shift)).to eq(expected_2)
   end
 
-  xit 'assigns each character to index' do
-    expect(@enigma.character_set_with_index.length).to eq(27)
+  it 'creates alphabet for shift B' do
+    @shift = Shifts.new(@key, @date)
+    expected_1 = {"A" => 3, "B" => 27, "C" => 73, "D" => 20}
+    allow(@shift).to receive(:final_shifts).and_return(expected_1)
+
+    expected = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", " "]
+
+    expect(@enigma.encrypted_alphabet_b(@shift)).to eq(expected)
   end
 
-  it 'assigns message to char index' do
+  it 'creates alphabet for shift C' do
+    @shift = Shifts.new(@key, @date)
+    expected_1 = {"A" => 3, "B" => 27, "C" => 73, "D" => 20}
+    allow(@shift).to receive(:final_shifts).and_return(expected_1)
+
+    expected = ["t", "u", "v", "w", "x", "y", "z", " ", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s"]
+
+    expect(@enigma.encrypted_alphabet_c(@shift)).to eq(expected)
+  end
+
+  it 'creates alphabet for shift D' do
+    @shift = Shifts.new(@key, @date)
+    expected_1 = {"A" => 3, "B" => 27, "C" => 73, "D" => 20}
+    allow(@shift).to receive(:final_shifts).and_return(expected_1)
+
+    expected = ["u", "v", "w", "x", "y", "z", " ", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t"]
+
+    expect(@enigma.encrypted_alphabet_d(@shift)).to eq(expected)
+  end
+
+  it 'returns encrypted message' do
     message = "hello world"
+    @shift = Shifts.new(@key, @date)
+    expected_1 = {"A" => 3, "B" => 27, "C" => 73, "D" => 20}
+    allow(@shift).to receive(:final_shifts).and_return(expected_1)
 
+
+    expect(@enigma.encrypted_string(message, @shift)).to eq("keder ohulw")
+  end
+
+  it 'returns decrypted message' do
+    message = "keder ohulw"
+    @shift = Shifts.new(@key, @date)
+    expected_1 = {"A" => 3, "B" => 27, "C" => 73, "D" => 20}
+    allow(@shift).to receive(:final_shifts).and_return(expected_1)
+
+
+    expect(@enigma.decrypted_string(message, @shift)).to eq("hello world")
   end
 
 end

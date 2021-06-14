@@ -1,26 +1,22 @@
 class Shifts
   attr_reader :key, :date
 
-  def initialize
+  def initialize(key, date)
     @key = key
     @date = date
   end
 
-  # def todays_date
-  #   Time.now.strftime("%d%m%y")
-  # end
-
   def key_shift_assignment
     shift_hash = {
-                 "A" => key[0..1].to_i,
-                 "B" => key[1..2].to_i,
-                 "C" => key[2..3].to_i,
-                 "D" => key[3..4].to_i
+                 "A" => @key[0..1].to_i,
+                 "B" => @key[1..2].to_i,
+                 "C" => @key[2..3].to_i,
+                 "D" => @key[3..4].to_i
                  }
   end
 
   def offsets_shift_assignment
-    sqr_date = date.to_i ** 2
+    sqr_date = @date.to_i ** 2
     last_four = sqr_date.to_s[-4..-1]
     shift_hash = {
                  "A" => last_four[0].to_i,

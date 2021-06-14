@@ -1,20 +1,14 @@
 require 'spec_helper'
-require './lib/keys'
+require './lib/key_generator'
 require './lib/shifts'
 
 RSpec.describe Shifts do
   before :each do
-    @shifts = Shifts.new
-    allow(@shifts).to receive(:key).and_return("02715")
-    allow(@shifts).to receive(:date).and_return("040895")
+    @shifts = Shifts.new("02715", "040895")
   end
 
   it 'exists' do
     expect(@shifts).to be_a(Shifts)
-  end
-
-  xit 'creates todays date DDMMYY' do
-    expect(@shifts.todays_date).to eq("120621")
   end
 
   it 'assigns key to shift' do
