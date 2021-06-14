@@ -8,10 +8,10 @@ message = handle.read
 
 writer = File.open(ARGV[1], "w")
 
-enigma.encrypt(message)
+result = enigma.encrypt(message)
 
-writer.write(@enigma.encrypt(message)[:encryption])
+writer.write(result[:encryption])
 
-p "Created #{ARGV[1]} with the key #{@enigma.encrypt(message)[:key]} and date #{@enigma.encrypt(message)[:date]}"
+p "Created #{ARGV[1]} with the key #{result[:key]} and date #{result[:date]}"
 
 writer.close

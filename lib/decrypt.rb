@@ -8,7 +8,9 @@ message = handle.read
 
 writer = File.open(ARGV[1], "w")
 
-writer.write(enigma.decrypt(message, ARGV[2], ARGV[3])[:decryption])
+result = enigma.decrypt(message, ARGV[2], ARGV[3])
+
+writer.write(result[:decryption])
 
 p "Created #{ARGV[1]} with the key #{ARGV[2]} and date #{ARGV[3]}"
 
