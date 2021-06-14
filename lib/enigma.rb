@@ -8,6 +8,10 @@ class Enigma
     @alphabet = ("a".."z").to_a << " "
   end
 
+  def todays_date
+    Date.today.strftime("%d%m%y")
+  end
+
   def encrypt(message, key=nil, date=nil)
     @message = message.downcase
     @key = key || KeyGenerator.random_key
@@ -34,10 +38,6 @@ class Enigma
                 }
   end
 
-  def todays_date
-    Date.today.strftime("%d%m%y")
-  end
-
   def message_with_alphabet_index(message)
     message_alphabet_index = []
     message.each_char do |char|
@@ -45,8 +45,35 @@ class Enigma
         message_alphabet_index << @alphabet.index(char)
       end
     end
-    require "pry"; binding.pry
     message_alphabet_index
+  end
+
+  def encrypted_string(message, shift)
+    message_with_alphabet_index(message).map.with_index do |number, index|
+      if (index + 1) % 4 == 1
+        encrypted_alphabet_a(shift)[number]
+      elsif (index +1) % 4 == 2
+        encrypted_alphabet_b(shift)[number]
+      elsif (index + 1) % 4 == 3
+        encrypted_alphabet_c(shift)[number]
+      elsif (index + 1) % 4 == 0
+        encrypted_alphabet_d(shift)[number]
+      end
+    end.join
+  end
+
+  def decrypted_string(message, shift)
+    message_with_alphabet_index(message).map.with_index do |number, index|
+      if (index + 1) % 4 == 1
+        decrypted_alphabet_a(shift)[number]
+      elsif (index +1) % 4 == 2
+        decrypted_alphabet_b(shift)[number]
+      elsif (index + 1) % 4 == 3
+        decrypted_alphabet_c(shift)[number]
+      elsif (index + 1) % 4 == 0
+        decrypted_alphabet_d(shift)[number]
+      end
+    end.join
   end
 
   def encrypted_alphabet_a(shift)
@@ -88,33 +115,4 @@ class Enigma
     number = shift.final_shifts["D"]
     @alphabet.rotate(-number)
   end
-
-  def encrypted_string(message, shift)
-    message_with_alphabet_index(message).map.with_index do |number, index|
-      if (index + 1) % 4 == 1
-        encrypted_alphabet_a(shift)[number]
-      elsif (index +1) % 4 == 2
-        encrypted_alphabet_b(shift)[number]
-      elsif (index + 1) % 4 == 3
-        encrypted_alphabet_c(shift)[number]
-      elsif (index + 1) % 4 == 0
-        encrypted_alphabet_d(shift)[number]
-      end
-    end.join
-  end
-
-  def decrypted_string(message, shift)
-    message_with_alphabet_index(message).map.with_index do |number, index|
-      if (index + 1) % 4 == 1
-        decrypted_alphabet_a(shift)[number]
-      elsif (index +1) % 4 == 2
-        decrypted_alphabet_b(shift)[number]
-      elsif (index + 1) % 4 == 3
-        decrypted_alphabet_c(shift)[number]
-      elsif (index + 1) % 4 == 0
-        decrypted_alphabet_d(shift)[number]
-      end
-    end.join
-  end
-
 end
