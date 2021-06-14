@@ -26,7 +26,6 @@ class Enigma
     @date = date || todays_date
     @shift = Shifts.new(@key, @date)
     message_with_alphabet_index(@message)
-    require "pry"; binding.pry
     decrypted = {
                   decryption: decrypted_string(@message, @shift),
                   key: @key,
@@ -89,13 +88,13 @@ class Enigma
   def encrypted_string(message, shift)
     message_with_alphabet_index(message).map.with_index do |number, index|
       if (index + 1) % 4 == 1
-        encrypted_alphabet(shift)[number]
+        encrypted_alphabet_a(shift)[number]
       elsif (index +1) % 4 == 2
-        encrypted_alphabet(shift)[number]
+        encrypted_alphabet_b(shift)[number]
       elsif (index + 1) % 4 == 3
-        encrypted_alphabet(shift)[number]
+        encrypted_alphabet_c(shift)[number]
       elsif (index + 1) % 4 == 0
-        encrypted_alphabet(shift)[number]
+        encrypted_alphabet_d(shift)[number]
       end
     end.join
   end
