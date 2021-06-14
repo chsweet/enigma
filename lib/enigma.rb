@@ -1,7 +1,8 @@
 require 'date'
+require './lib/key_generator'
+require './lib/shifts'
 
 class Enigma
-  attr_reader :alphabet, :message, :key, :date, :shift
 
   def initialize
     @alphabet = ("a".."z").to_a << " "
