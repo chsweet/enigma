@@ -41,8 +41,11 @@ class Enigma
   def message_with_alphabet_index(message)
     message_alphabet_index = []
     message.each_char do |char|
-      message_alphabet_index << @alphabet.index(char)
+      unless @alphabet.index(char).nil?
+        message_alphabet_index << @alphabet.index(char)
+      end
     end
+    require "pry"; binding.pry
     message_alphabet_index
   end
 

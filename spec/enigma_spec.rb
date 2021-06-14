@@ -37,7 +37,7 @@ RSpec.describe Enigma do
   end
 
   it 'can assign new character' do
-    message = "hello world"
+    message = "hello world!"
 
     expected = [7, 4, 11, 11, 14, 26, 22, 14, 17, 11, 3]
 
